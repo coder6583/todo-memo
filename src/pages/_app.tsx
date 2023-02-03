@@ -2,13 +2,29 @@ import "@/styles/globals.css";
 
 import React, { useEffect } from "react";
 import type { AppProps } from "next/app";
-import { createTheme, CssBaseline } from "@mui/material";
-import { MuiThemeProvider } from "@material-ui/core";
+import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
+import { RecoilRoot } from "recoil";
 
 const buttonTheme = createTheme({
   typography: {
+    fontFamily: [
+      "Rubik",
+      "Montserrat",
+      "Roboto",
+      '"Helvetica Neue"',
+      "Arial",
+      "sans-serif",
+    ].join(","),
     button: {
       textTransform: "none",
+    },
+  },
+  palette: {
+    primary: {
+      main: "#1B998B",
+    },
+    secondary: {
+      main: "#60A5FA",
     },
   },
 });
@@ -20,10 +36,12 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   }, []);
 
   return (
-    <MuiThemeProvider theme={buttonTheme}>
-      <CssBaseline />
-      <Component {...pageProps} />
-    </MuiThemeProvider>
+    <RecoilRoot>
+      <ThemeProvider theme={buttonTheme}>
+        <CssBaseline />
+        <Component {...pageProps} />
+      </ThemeProvider>
+    </RecoilRoot>
   );
 };
 

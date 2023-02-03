@@ -1,12 +1,36 @@
-import React from "react";
-import Document, { Head, Html, Main, NextScript } from "next/document";
-import { ServerStyleSheets } from "@material-ui/core/styles";
+import Document, {
+  Html,
+  Head,
+  Main,
+  NextScript,
+  DocumentContext,
+} from "next/document";
+import { extractCritical } from "@emotion/server";
+import { resetServerContext } from "react-beautiful-dnd";
 
-class MyDocument extends Document {
+export default class MyDocument extends Document {
+  static async getInitialProps(ctx: DocumentContext) {
+    const page = await ctx.renderPage();
+    const initialProps = await Document.getInitialProps(ctx);
+    const styles = extractCritical(page.html);
+    resetServerContext();
+    return { ...initialProps, ...page, ...styles };
+  }
+
   render() {
     return (
-      <Html>
-        <Head></Head>
+      <Html lang="en">
+        <Head>
+          <link
+            href="http://fonts.googleapis.com/css?family=Rubik"
+            rel="stylesheet"
+            type="text/css"
+          />
+          {/* <style
+            data-emotion-css={this.props.ids.join(" ")}
+            dangerouslySetInnerHTML={{ __html: this.props.css }}
+          /> */}
+        </Head>
         <body>
           <Main />
           <NextScript />
@@ -15,25 +39,3 @@ class MyDocument extends Document {
     );
   }
 }
-
-MyDocument.getInitialProps = async (ctx) => {
-  const sheets = new ServerStyleSheets();
-  const originalRenderPage = ctx.renderPage;
-
-  ctx.renderPage = () =>
-    originalRenderPage({
-      enhanceApp: (App) => (props) => sheets.collect(<App {...props} />),
-    });
-
-  const initialProps = await Document.getInitialProps(ctx);
-
-  return {
-    ...initialProps,
-    styles: [
-      ...React.Children.toArray(initialProps.styles),
-      sheets.getStyleElement(),
-    ],
-  };
-};
-
-export default MyDocument;

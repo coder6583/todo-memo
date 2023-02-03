@@ -1,13 +1,12 @@
-import { AppBar, Box, IconButton, Toolbar, Typography } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
+import { AppBar, Box, Toolbar, Typography } from "@mui/material";
 import { FC } from "react";
 
 const IndexHeader: FC = () => {
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
-        <AppBar position="static" className="bg-blue-400">
-          <Toolbar className="w-10/12 mx-auto">
+        <AppBar position="static" className="bg-theme2 h-min">
+          <Toolbar className="ml-16" variant="dense">
             <Typography
               variant="h6"
               component="div"

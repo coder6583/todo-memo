@@ -1,42 +1,109 @@
-import { TaskListType } from "@/typings/tasklist";
-import { Add, MoreVert } from "@material-ui/icons";
+import EditableTypography from "@/components/ui/EditableTypography";
+import HorizMenu from "@/components/ui/HorizMenu";
 import {
+  WorkspaceIndexState,
+  WorkspacesState,
+} from "@/features/recoil/tasklist";
+import updateAddTask from "@/features/tasklist/updateAddTask";
+import updateListName from "@/features/tasklist/updateListName";
+import { TaskListType, TaskStateType } from "@/typings/tasklist";
+import { AddCircleOutline, MoreHoriz } from "@mui/icons-material";
+import {
+  Box,
   Card,
   CardContent,
   CardHeader,
+  Divider,
   IconButton,
-  Stack,
+  Typography,
 } from "@mui/material";
-import { FC } from "react";
-import TaskNode from "../TaskNode/TaskNode";
+import { FC, MouseEventHandler, useState } from "react";
+import { useRecoilState } from "recoil";
+import ChildTaskList from "../ChildTaskList/ChildTaskList";
+import TaskListMenu from "../TaskListMenu/TaskListMenu";
 
 type TaskListProps = {
   tasklist: TaskListType;
+  listIndex: number;
 };
 
-const TaskList: FC<TaskListProps> = ({ tasklist }: TaskListProps) => {
+const TaskList: FC<TaskListProps> = ({
+  tasklist,
+  listIndex,
+}: TaskListProps) => {
+  //Add Task States and Handlers
+  const [data, setData] = useRecoilState(WorkspacesState);
+  const [workspaceIndex] = useRecoilState(WorkspaceIndexState);
+  const handleAddTask: MouseEventHandler<HTMLButtonElement> = () => {
+    const newData = updateAddTask(data, workspaceIndex, listIndex);
+    if (newData) {
+      setData(newData);
+    }
+  };
+
   return (
     <Card>
       <CardHeader
-        title={tasklist.name}
-        action={
-          <>
-            <IconButton aria-label="add_task" className="p-1">
-              <Add className="text-white" />
-            </IconButton>
-            <IconButton aria-label="settings" className="p-1">
-              <MoreVert className="text-white" />
-            </IconButton>
-          </>
+        title={
+          <EditableTypography
+            defaultValue={tasklist.name}
+            onBlur={(e) => {
+              const newData = updateListName(
+                data,
+                workspaceIndex,
+                listIndex,
+                e.currentTarget.value
+              );
+              if (newData) {
+                setData(newData);
+              }
+            }}
+          />
         }
-        className="p-4 pt-3 pb-1 text-xl bg-blue-400 text-white"
+        action={
+          <Box component="div" className="align-middle my-auto flex">
+            <IconButton
+              aria-label="add_task"
+              className="p-1 my-auto"
+              onClick={handleAddTask}
+            >
+              <AddCircleOutline className="text-white" />
+            </IconButton>
+            <Box component="div" className="my-auto">
+              <HorizMenu
+                MenuComponent={TaskListMenu}
+                menuComponentProps={{
+                  listIndex: listIndex,
+                }}
+                horizColor="white"
+              />
+            </Box>
+          </Box>
+        }
+        sx={{ backgroundColor: tasklist.tagColor }}
+        className="pl-4 pt-2 pb-1 pr-1 font-extrabold text-xl text-white shadow-sm align-middle"
       />
       <CardContent>
-        <Stack spacing={1}>
-          {tasklist.tasklist.map((task) => {
-            return <TaskNode task={task} key={task.name} />;
-          })}
-        </Stack>
+        {[
+          { id: "todo" as TaskStateType, name: "To do" },
+          { id: "ondeck" as TaskStateType, name: "On Deck" },
+          { id: "done" as TaskStateType, name: "Done" },
+        ].map((element, idIndex) => {
+          return (
+            <Box component="div" key={element.id}>
+              <Typography variant="h6" className={idIndex ? "pt-2" : ""}>
+                {element.name}
+              </Typography>
+              <Divider />
+              <ChildTaskList
+                id={tasklist.id + element.id}
+                listIndex={listIndex}
+                tasklist={tasklist.tasklist[element.id]}
+                state={element.id}
+              />
+            </Box>
+          );
+        })}
       </CardContent>
     </Card>
   );

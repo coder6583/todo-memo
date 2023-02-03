@@ -1,14 +1,30 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
-.css-hyum1k-MuiToolbar-root {
+@layer base {
+  html {
+    font-family: Montserrat, system-ui, sans-serif;
+  }
+}
+
+:root {
+  --top-bar-height: 48px;
+  --listview-header: 78px;
+}
+
+.MuiCardHeader-action {
+  margin: auto;
+}
+
+.css-10ltm04-MuiToolbar-root {
   padding-left: 0px;
   padding-right: 0px;
 }
 
-.css-1qvr50w-MuiTypography-root {
-  font-size: 1.25rem;
-  font-weight: 600;
-  letter-spacing: 0.01em;
+.css-o654tt-MuiInputBase-root-MuiInput-root:hover:not(
+    .Mui-disabled,
+    .Mui-error
+  ):before {
+  border-bottom: 2px solid rgba(255, 255, 255, 1);
 }

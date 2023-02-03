@@ -1,18 +1,16 @@
-import { TaskListViewType } from "@/typings/tasklist";
-import { MuiThemeProvider } from "@material-ui/core";
-import { Add } from "@material-ui/icons";
 import {
-  Box,
-  Button,
-  createTheme,
-  Grid,
-  Paper,
-  styled,
-  Switch,
-  Typography,
-} from "@mui/material";
+  WorkspaceIndexState,
+  WorkspacesState,
+} from "@/features/recoil/tasklist";
+import { updateListDrag } from "@/features/tasklist/updateListDrag";
+import { AddCircleOutline } from "@mui/icons-material";
+import { Box, Button, Divider, Paper, styled } from "@mui/material";
 import { FC } from "react";
+import { DragDropContext } from "react-beautiful-dnd";
+import { useRecoilState } from "recoil";
+import AddListButton from "../AddListButton/AddListButton";
 import TaskList from "../TaskList/TaskList";
+import TaskListViewHeader from "../TaskListViewHeader/TaskListViewHeader";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -23,41 +21,60 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 const TaskListView: FC = () => {
-  const data: TaskListViewType = {
-    tasklistlist: [
-      {
-        name: "Laze プロジェクト",
-        tasklist: [
-          { name: "testtask1", date: 0, checked: false, memolist: [] },
-          { name: "testtask1", date: 0, checked: false, memolist: [] },
-        ],
-      },
-    ],
-  };
+  const [data, setData] = useRecoilState(WorkspacesState);
+  const [workspaceIndex] = useRecoilState(WorkspaceIndexState);
+  const workspace = data.at(workspaceIndex);
+
   return (
     <>
-      <Box component="div" className="flex pb-4">
-        <Button
-          variant="contained"
-          startIcon={<Add />}
-          className="bg-lime-200 text-gray-500"
+      <TaskListViewHeader />
+      <Divider className="mb-2" />
+      <DragDropContext
+        onDragEnd={(result) => {
+          const newData = updateListDrag(data, workspaceIndex, result);
+          if (newData) {
+            setData(newData);
+          }
+        }}
+      >
+        <Box
+          component="div"
+          className="flex overflow-auto w-full pl-4"
+          sx={{
+            height:
+              "calc(100vh - var(--top-bar-height) - var(--listview-header) - 17px)",
+            // scrollbarWidth: "thin",
+            "&::-webkit-scrollbar": {
+              height: "8px",
+              width: "8px",
+            },
+            "&::-webkit-scrollbar-track": {
+              background: "#f1f1f1",
+            },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: "#888",
+              borderRadius: "10px",
+            },
+            "&::-webkit-scrollbar-thumb:hover": {
+              background: "#555",
+            },
+          }}
         >
-          Add List
-        </Button>
-        <Typography variant="body2" className="text-gray-500 my-auto ml-auto">
-          View All
-        </Typography>
-        <Switch />
-      </Box>
-      <Grid container spacing={3}>
-        {data.tasklistlist.map((tasklist) => {
-          return (
-            <Grid item xs={4} key={tasklist.name}>
-              <TaskList tasklist={tasklist} />
-            </Grid>
-          );
-        })}
-      </Grid>
+          {(workspace?.tasklistlist ?? []).map((tasklist, listIndex) => {
+            return (
+              <Paper
+                elevation={4}
+                className="block m-2 mr-4 h-min"
+                sx={{ width: "37%", minWidth: "37%", maxWidth: "37%" }}
+                key={tasklist.id}
+              >
+                <TaskList tasklist={tasklist} listIndex={listIndex} />
+              </Paper>
+            );
+          })}
+          <AddListButton />
+        </Box>
+      </DragDropContext>
     </>
   );
 };
