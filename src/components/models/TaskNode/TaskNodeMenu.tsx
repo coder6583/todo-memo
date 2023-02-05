@@ -1,7 +1,4 @@
-import {
-  WorkspaceIndexState,
-  WorkspacesState,
-} from "@/features/recoil/tasklist";
+import { UserState, WorkspaceIndexState } from "@/features/recoil/tasklist";
 import updateDuplicateTask from "@/features/tasklist/updateDuplicateTask";
 import updateRemoveTask from "@/features/tasklist/updateRemoveTask";
 import { MenuComponentProps } from "@/typings/tasklist";
@@ -16,9 +13,8 @@ const TaskNodeMenu: FC<MenuComponentProps> = ({
   taskIndex,
   taskState,
 }) => {
-  const [data, setData] = useRecoilState(WorkspacesState);
-  const [workspaceIndex, setWorkspaceIndex] =
-    useRecoilState(WorkspaceIndexState);
+  const [data, setData] = useRecoilState(UserState);
+  const [workspaceIndex] = useRecoilState(WorkspaceIndexState);
   if (
     listIndex == undefined ||
     taskIndex == undefined ||
@@ -36,15 +32,15 @@ const TaskNodeMenu: FC<MenuComponentProps> = ({
       </MenuItem>
       <MenuItem
         onClick={() => {
-          const newData = updateDuplicateTask(
-            data,
+          const newWorkspaces = updateDuplicateTask(
+            data.workspaces,
             workspaceIndex,
             listIndex,
             taskIndex,
             taskState
           );
-          if (newData) {
-            setData(newData);
+          if (newWorkspaces) {
+            setData({ ...data, workspaces: newWorkspaces });
           }
           handleClose();
         }}
@@ -57,15 +53,15 @@ const TaskNodeMenu: FC<MenuComponentProps> = ({
       <Divider />
       <MenuItem
         onClick={() => {
-          const newData = updateRemoveTask(
-            data,
+          const newWorkspaces = updateRemoveTask(
+            data.workspaces,
             workspaceIndex,
             listIndex,
             taskIndex,
             taskState
           );
-          if (newData) {
-            setData(newData);
+          if (newWorkspaces) {
+            setData({ ...data, workspaces: newWorkspaces });
           }
           handleClose();
         }}

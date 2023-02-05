@@ -1,33 +1,31 @@
 import EditableTypography from "@/components/ui/EditableTypography";
 import {
   AddListButtonState,
+  UserState,
   WorkspaceIndexState,
-  WorkspacesState,
 } from "@/features/recoil/tasklist";
-import updateAddList from "@/features/tasklist/updateAddList";
-import handleAddList from "@/features/tasklist/updateAddList";
 import updateViewName from "@/features/tasklist/updateViewName";
 import { PostAdd } from "@mui/icons-material";
 import { Box, Button, Divider, Switch, Typography } from "@mui/material";
 import { useRecoilState } from "recoil";
 
 const TaskListViewHeader = () => {
-  const [data, setData] = useRecoilState(WorkspacesState);
+  const [data, setData] = useRecoilState(UserState);
   const [edit, setEdit] = useRecoilState(AddListButtonState);
   const [workspaceIndex] = useRecoilState(WorkspaceIndexState);
 
   return (
     <Box component="div" className="flex pb-4 pt-4 pl-8">
       <EditableTypography
-        defaultValue={data.at(workspaceIndex)?.name ?? ""}
+        defaultValue={data.workspaces.at(workspaceIndex)?.name ?? ""}
         onBlur={(e) => {
-          const newData = updateViewName(
-            data,
+          const newWorkspaces = updateViewName(
+            data.workspaces,
             workspaceIndex,
             e.currentTarget.value
           );
-          if (newData) {
-            setData(newData);
+          if (newWorkspaces) {
+            setData({ ...data, workspaces: newWorkspaces });
           }
         }}
         underlineColor="black"

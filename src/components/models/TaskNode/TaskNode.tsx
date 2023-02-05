@@ -1,8 +1,5 @@
 import HorizMenu from "@/components/ui/HorizMenu";
-import {
-  WorkspacesState,
-  WorkspaceIndexState,
-} from "@/features/recoil/tasklist";
+import { UserState, WorkspaceIndexState } from "@/features/recoil/tasklist";
 import { updateListCheck } from "@/features/tasklist/updateListCheck";
 import updateTask from "@/features/tasklist/updateTask";
 import { stateColor, stateIcon } from "@/features/tasklist/utils";
@@ -17,8 +14,8 @@ import {
 } from "@mui/material";
 import { FC, MouseEventHandler, useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
-import TaskNodeEdit from "../TaskNodeEdit/TaskNodeEdit";
-import TaskNodeMenu from "../TaskNodeMenu/TaskNodeMenu";
+import TaskNodeEdit from "./TaskNodeEdit";
+import TaskNodeMenu from "./TaskNodeMenu";
 
 type TaskNodeProps = {
   task: TaskType;
@@ -33,7 +30,7 @@ const TaskNode: FC<TaskNodeProps> = ({
   listIndex,
   state,
 }: TaskNodeProps) => {
-  const [data, setData] = useRecoilState(WorkspacesState);
+  const [data, setData] = useRecoilState(UserState);
   const [workspaceIndex] = useRecoilState(WorkspaceIndexState);
 
   const [edit, setEdit] = useState<boolean>(!task.initialized);
@@ -42,9 +39,13 @@ const TaskNode: FC<TaskNodeProps> = ({
   };
 
   const [error, setError] = useState<boolean>(false);
-  const [originalTask] = useState<TaskType | null>(
+  const [originalTask, setTask] = useState<TaskType | null>(
     task.initialized ? task : null
   );
+
+  useEffect(() => {
+    setTask(task.initialized ? task : null);
+  }, [task]);
 
   return (
     <Paper
@@ -63,15 +64,15 @@ const TaskNode: FC<TaskNodeProps> = ({
       >
         <IconButton
           onClick={() => {
-            const newData = updateListCheck(
-              data,
+            const newWorkspaces = updateListCheck(
+              data.workspaces,
               workspaceIndex,
               listIndex,
               taskIndex,
               state
             );
-            if (newData) {
-              setData(newData);
+            if (newWorkspaces) {
+              setData({ ...data, workspaces: newWorkspaces });
             }
           }}
         >
@@ -88,16 +89,16 @@ const TaskNode: FC<TaskNodeProps> = ({
               onDoubleClick={stopPropagation}
               onChange={(e) => {
                 setError(e.currentTarget.value == "");
-                const newData = updateTask(
-                  data,
+                const newWorkspaces = updateTask(
+                  data.workspaces,
                   workspaceIndex,
                   listIndex,
                   taskIndex,
                   task.state,
                   { ...task, name: e.currentTarget.value }
                 );
-                if (newData) {
-                  setData(newData);
+                if (newWorkspaces) {
+                  setData({ ...data, workspaces: newWorkspaces });
                 }
               }}
               multiline

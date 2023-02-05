@@ -1,7 +1,4 @@
-import {
-  WorkspaceIndexState,
-  WorkspacesState,
-} from "@/features/recoil/tasklist";
+import { UserState, WorkspaceIndexState } from "@/features/recoil/tasklist";
 import updateRemoveTask from "@/features/tasklist/updateRemoveTask";
 import updateTask from "@/features/tasklist/updateTask";
 import { TaskType } from "@/typings/tasklist";
@@ -24,8 +21,8 @@ const TaskNodeEdit: FC<TaskNodeEditProps> = ({
   listIndex,
   taskIndex,
 }) => {
-  const [data, setData] = useRecoilState(WorkspacesState);
-  const [workspaceIndex, setIndex] = useRecoilState(WorkspaceIndexState);
+  const [data, setData] = useRecoilState(UserState);
+  const [workspaceIndex] = useRecoilState(WorkspaceIndexState);
 
   return (
     <Box component="div" className="flex mb-2">
@@ -34,32 +31,16 @@ const TaskNodeEdit: FC<TaskNodeEditProps> = ({
         size="small"
         onClick={() => {
           if (!originalTask) {
-            const newData = updateTask(
-              data,
+            const newWorkspaces = updateTask(
+              data.workspaces,
               workspaceIndex,
               listIndex,
               taskIndex,
               "todo",
               { ...task, initialized: true }
             );
-            if (newData) {
-              setData(newData);
-            }
-          }
-          close();
-        }}
-        onKeyDown={() => {
-          if (!originalTask) {
-            const newData = updateTask(
-              data,
-              workspaceIndex,
-              listIndex,
-              taskIndex,
-              "todo",
-              { ...task, initialized: true }
-            );
-            if (newData) {
-              setData(newData);
+            if (newWorkspaces) {
+              setData({ ...data, workspaces: newWorkspaces });
             }
           }
           close();
@@ -72,28 +53,28 @@ const TaskNodeEdit: FC<TaskNodeEditProps> = ({
         variant="outlined"
         onClick={() => {
           if (!originalTask) {
-            const newData = updateRemoveTask(
-              data,
+            const newWorkspaces = updateRemoveTask(
+              data.workspaces,
               workspaceIndex,
               listIndex,
               taskIndex,
               "todo"
             );
-            if (newData) {
-              setData(newData);
+            if (newWorkspaces) {
+              setData({ ...data, workspaces: newWorkspaces });
             }
             return null;
           }
-          const newData = updateTask(
-            data,
+          const newWorkspaces = updateTask(
+            data.workspaces,
             workspaceIndex,
             listIndex,
             taskIndex,
             originalTask.state,
             originalTask
           );
-          if (newData) {
-            setData(newData);
+          if (newWorkspaces) {
+            setData({ ...data, workspaces: newWorkspaces });
           }
           close();
         }}

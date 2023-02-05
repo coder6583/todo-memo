@@ -1,7 +1,4 @@
-import {
-  WorkspaceIndexState,
-  WorkspacesState,
-} from "@/features/recoil/tasklist";
+import { UserState, WorkspaceIndexState } from "@/features/recoil/tasklist";
 import updateAddTask from "@/features/tasklist/updateAddTask";
 import { TaskStateType, TaskType } from "@/typings/tasklist";
 import { AddCircleOutline } from "@mui/icons-material";
@@ -24,7 +21,7 @@ const ChildTaskList: FC<ChildTaskListType> = ({
   listIndex,
   state,
 }) => {
-  const [data, setData] = useRecoilState(WorkspacesState);
+  const [data, setData] = useRecoilState(UserState);
   const [workspaceIndex] = useRecoilState(WorkspaceIndexState);
   return (
     <>
@@ -72,13 +69,13 @@ const ChildTaskList: FC<ChildTaskListType> = ({
                 startIcon={<AddCircleOutline />}
                 className="h-min mt-2 border-theme2 text-theme2 mr-4"
                 onClick={() => {
-                  const newData = updateAddTask(
-                    data,
+                  const newWorkspaces = updateAddTask(
+                    data.workspaces,
                     workspaceIndex,
                     listIndex
                   );
-                  if (newData) {
-                    setData(newData);
+                  if (newWorkspaces) {
+                    setData({ ...data, workspaces: newWorkspaces });
                   }
                 }}
                 fullWidth

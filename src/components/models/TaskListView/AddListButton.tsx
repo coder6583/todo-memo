@@ -1,31 +1,23 @@
 import NewItemInput from "@/components/ui/NewItemInput";
 import {
   AddListButtonState,
+  UserState,
   WorkspaceIndexState,
-  WorkspacesState,
 } from "@/features/recoil/tasklist";
 import updateAddList from "@/features/tasklist/updateAddList";
-import { updateAddWorkspace } from "@/features/tasklist/updateAddWorkspace";
-import { AddCircle, AddCircleOutline } from "@mui/icons-material";
-import {
-  Box,
-  Button,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Typography,
-} from "@mui/material";
+import { AddCircleOutline } from "@mui/icons-material";
+import { Box, Button, Typography } from "@mui/material";
 import { MouseEventHandler, useState } from "react";
 import { useRecoilState } from "recoil";
 
 const AddListButton = () => {
-  const [data, setData] = useRecoilState(WorkspacesState);
+  const [data, setData] = useRecoilState(UserState);
   const [edit, setEdit] = useRecoilState(AddListButtonState);
   const [workspaceIndex] = useRecoilState(WorkspaceIndexState);
   const addList = (str: string) => {
-    const newData = updateAddList(data, workspaceIndex, str);
-    if (newData) {
-      setData(newData);
+    const newWorkspaces = updateAddList(data.workspaces, workspaceIndex, str);
+    if (newWorkspaces) {
+      setData({ ...data, workspaces: newWorkspaces });
     }
     setEdit(false);
   };

@@ -40,3 +40,11 @@ export type MenuComponentProps = {
   taskIndex?: number;
   taskState?: TaskStateType;
 };
+
+export type UserType = {
+  name: string;
+  email: string;
+  avatar: string;
+  uid: string;
+  workspaces: TaskListViewType[];
+};

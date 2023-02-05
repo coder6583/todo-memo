@@ -1,29 +1,29 @@
-import { WorkspacesState } from "@/features/recoil/tasklist";
+import { UserState } from "@/features/recoil/tasklist";
 import { Home } from "@mui/icons-material";
 import {
-  Box,
   Divider,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Paper,
 } from "@mui/material";
 import { useRecoilState } from "recoil";
-import AddWorkspaceButton from "../AddWorkspaceButton/AddWorkspaceButton";
-import WorkspaceListItem from "../WorkspaceListItem/WorkspaceListItem";
+import AddWorkspaceButton from "./AddWorkspaceButton";
+import WorkspaceListItem from "./WorkspaceListItem";
 
-const IndexSider = () => {
-  const [data, setData] = useRecoilState(WorkspacesState);
+const WorkspaceSider = () => {
+  const [data, setData] = useRecoilState(UserState);
 
   return (
     <>
-      <Box
-        component="div"
-        className="w-1/5 shadow-md"
+      <Paper
+        className="w-1/5 bg-gray-100"
         sx={{
           height: "calc(100vh - var(--top-bar-height))",
         }}
+        elevation={2}
       >
         <List className="pt-2">
           <ListItem className="p-0">
@@ -40,16 +40,16 @@ const IndexSider = () => {
           <ListItem>
             <ListItemText primary="Workspaces" />
           </ListItem>
-          {data.map((workspace, i) => {
+          {data.workspaces.map((workspace, i) => {
             return <WorkspaceListItem workspace={workspace} i={i} key={i} />;
           })}
           <ListItem className="p-0">
             <AddWorkspaceButton />
           </ListItem>
         </List>
-      </Box>
+      </Paper>
     </>
   );
 };
 
-export default IndexSider;
+export default WorkspaceSider;

@@ -2,19 +2,19 @@ import IndexHeader from "@/components/models/Index/IndexHeader";
 import { Box } from "@mui/material";
 import { FC, ReactNode } from "react";
 
-export type IndexLayoutProps = {
+export type LoginLayoutProps = {
   children: ReactNode;
 };
 
-const IndexLayout: FC<IndexLayoutProps> = ({ children }) => {
+const LoginLayout: FC<LoginLayoutProps> = ({ children }) => {
   return (
     <>
       <IndexHeader />
-      <Box component="div" className="flex">
-        <main>{children}</main>
+      <Box component="div">
+        <main className="mx-auto">{children}</main>
       </Box>
     </>
   );
 };
 
-export default IndexLayout;
+export default LoginLayout;

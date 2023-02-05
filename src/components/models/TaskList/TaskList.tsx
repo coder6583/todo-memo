@@ -1,9 +1,6 @@
 import EditableTypography from "@/components/ui/EditableTypography";
 import HorizMenu from "@/components/ui/HorizMenu";
-import {
-  WorkspaceIndexState,
-  WorkspacesState,
-} from "@/features/recoil/tasklist";
+import { UserState, WorkspaceIndexState } from "@/features/recoil/tasklist";
 import updateAddTask from "@/features/tasklist/updateAddTask";
 import updateListName from "@/features/tasklist/updateListName";
 import { TaskListType, TaskStateType } from "@/typings/tasklist";
@@ -19,8 +16,8 @@ import {
 } from "@mui/material";
 import { FC, MouseEventHandler, useState } from "react";
 import { useRecoilState } from "recoil";
-import ChildTaskList from "../ChildTaskList/ChildTaskList";
-import TaskListMenu from "../TaskListMenu/TaskListMenu";
+import ChildTaskList from "./ChildTaskList";
+import TaskListMenu from "./TaskListMenu";
 
 type TaskListProps = {
   tasklist: TaskListType;
@@ -32,12 +29,16 @@ const TaskList: FC<TaskListProps> = ({
   listIndex,
 }: TaskListProps) => {
   //Add Task States and Handlers
-  const [data, setData] = useRecoilState(WorkspacesState);
+  const [data, setData] = useRecoilState(UserState);
   const [workspaceIndex] = useRecoilState(WorkspaceIndexState);
   const handleAddTask: MouseEventHandler<HTMLButtonElement> = () => {
-    const newData = updateAddTask(data, workspaceIndex, listIndex);
-    if (newData) {
-      setData(newData);
+    const newWorkspaces = updateAddTask(
+      data.workspaces,
+      workspaceIndex,
+      listIndex
+    );
+    if (newWorkspaces) {
+      setData({ ...data, workspaces: newWorkspaces });
     }
   };
 
@@ -48,14 +49,14 @@ const TaskList: FC<TaskListProps> = ({
           <EditableTypography
             defaultValue={tasklist.name}
             onBlur={(e) => {
-              const newData = updateListName(
-                data,
+              const newWorkspaces = updateListName(
+                data.workspaces,
                 workspaceIndex,
                 listIndex,
                 e.currentTarget.value
               );
-              if (newData) {
-                setData(newData);
+              if (newWorkspaces) {
+                setData({ ...data, workspaces: newWorkspaces });
               }
             }}
           />

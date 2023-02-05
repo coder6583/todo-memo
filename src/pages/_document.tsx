@@ -26,6 +26,13 @@ export default class MyDocument extends Document {
             rel="stylesheet"
             type="text/css"
           />
+          {/* <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin /> */}
+          <link
+            href="https://fonts.cdnfonts.com/css/product-sans"
+            rel="stylesheet"
+          />
+
           {/* <style
             data-emotion-css={this.props.ids.join(" ")}
             dangerouslySetInnerHTML={{ __html: this.props.css }}

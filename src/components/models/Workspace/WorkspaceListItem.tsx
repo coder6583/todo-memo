@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { FC, useState } from "react";
 import { useRecoilState } from "recoil";
-import WorkspaceMenu from "../WorkspaceMenu/WorkspaceMenu";
+import WorkspaceMenu from "./WorkspaceMenu";
 
 type WorkspaceListItemProps = {
   workspace: TaskListViewType;

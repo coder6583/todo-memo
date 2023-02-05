@@ -1,19 +1,19 @@
 import React from "react";
-import Button from "@material-ui/core/Button";
 import Head from "next/head";
 import { NextPage } from "next";
-import IndexLayout from "@/components/layouts/IndexLayout/IndexLayout";
 import TaskListView from "@/components/models/TaskListView/TaskListView";
+import IndexLayout from "@/components/layouts/IndexLayout/IndexLayout";
+import { Typography } from "@mui/material";
 
 const Home: NextPage = () => {
-  const title = "TODO Memo";
+  const title = "Todomemo";
   return (
     <>
       <Head>
         <title>{title}</title>
       </Head>
       <IndexLayout>
-        <TaskListView />
+        <Typography>Hello</Typography>
       </IndexLayout>
     </>
   );

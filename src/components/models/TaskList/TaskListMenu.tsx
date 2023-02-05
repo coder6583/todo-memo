@@ -1,7 +1,4 @@
-import {
-  WorkspaceIndexState,
-  WorkspacesState,
-} from "@/features/recoil/tasklist";
+import { UserState, WorkspaceIndexState } from "@/features/recoil/tasklist";
 import updateAddTask from "@/features/tasklist/updateAddTask";
 import updateDuplicateList from "@/features/tasklist/updateDuplicateList";
 import updateRemoveList from "@/features/tasklist/updateRemoveList";
@@ -12,18 +9,12 @@ import {
   DeleteOutline,
   Edit,
 } from "@mui/icons-material";
-import {
-  Divider,
-  ListItemIcon,
-  ListItemText,
-  Menu,
-  MenuItem,
-} from "@mui/material";
-import { FC, MouseEvent } from "react";
+import { Divider, ListItemIcon, ListItemText, MenuItem } from "@mui/material";
+import { FC } from "react";
 import { useRecoilState } from "recoil";
 
 const TaskListMenu: FC<MenuComponentProps> = ({ handleClose, listIndex }) => {
-  const [data, setData] = useRecoilState(WorkspacesState);
+  const [data, setData] = useRecoilState(UserState);
   const [workspaceIndex, setWorkspaceIndex] =
     useRecoilState(WorkspaceIndexState);
   if (listIndex == undefined) {
@@ -39,9 +30,13 @@ const TaskListMenu: FC<MenuComponentProps> = ({ handleClose, listIndex }) => {
       </MenuItem>
       <MenuItem
         onClick={() => {
-          const newData = updateDuplicateList(data, workspaceIndex, listIndex);
-          if (newData) {
-            setData(newData);
+          const newWorkspaces = updateDuplicateList(
+            data.workspaces,
+            workspaceIndex,
+            listIndex
+          );
+          if (newWorkspaces) {
+            setData({ ...data, workspaces: newWorkspaces });
           }
           handleClose();
         }}
@@ -54,9 +49,13 @@ const TaskListMenu: FC<MenuComponentProps> = ({ handleClose, listIndex }) => {
       <Divider />
       <MenuItem
         onClick={() => {
-          const newData = updateAddTask(data, workspaceIndex, listIndex);
-          if (newData) {
-            setData(newData);
+          const newWorkspaces = updateAddTask(
+            data.workspaces,
+            workspaceIndex,
+            listIndex
+          );
+          if (newWorkspaces) {
+            setData({ ...data, workspaces: newWorkspaces });
           }
           handleClose();
         }}
@@ -69,9 +68,13 @@ const TaskListMenu: FC<MenuComponentProps> = ({ handleClose, listIndex }) => {
       <Divider />
       <MenuItem
         onClick={() => {
-          const newData = updateRemoveList(data, workspaceIndex, listIndex);
-          if (newData) {
-            setData(newData);
+          const newWorkspaces = updateRemoveList(
+            data.workspaces,
+            workspaceIndex,
+            listIndex
+          );
+          if (newWorkspaces) {
+            setData({ ...data, workspaces: newWorkspaces });
           }
           handleClose();
         }}
