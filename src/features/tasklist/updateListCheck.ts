@@ -2,16 +2,23 @@ import {
   TaskListType,
   TaskListViewType,
   TaskStateType,
+  WorkspaceIndexType,
 } from "@/typings/tasklist";
+import { doc, updateDoc } from "firebase/firestore";
+import db, { auth } from "../firebase/firebase";
+import { userConverter } from "../firebase/firestore";
 import { updateState } from "./utils";
 
-const updateListCheck = (
+const updateListCheck = async (
   data: TaskListViewType[],
-  workspaceIndex: number,
+  workspaceIndex: WorkspaceIndexType,
   listIndex: number,
   taskIndex: number,
   state: TaskStateType
-): TaskListViewType[] | null => {
+): Promise<TaskListViewType[] | null> => {
+  if (typeof workspaceIndex !== "number") {
+    return null;
+  }
   const workspace = data.at(workspaceIndex);
   if (!workspace?.tasklistlist) {
     return null;
@@ -19,7 +26,6 @@ const updateListCheck = (
   const sourceList =
     workspace.tasklistlist?.at(listIndex)?.tasklist[state] ?? [];
   const [task] = sourceList.slice(taskIndex, taskIndex + 1);
-  console.log(workspace.tasklistlist.length, "listIndex", listIndex);
   if (workspace.tasklistlist.length > listIndex && state != "done") {
     const destList =
       workspace.tasklistlist.at(listIndex)?.tasklist[updateState(state)] ?? [];
@@ -34,7 +40,7 @@ const updateListCheck = (
         }),
       },
     } as TaskListType;
-    return [
+    const newData = [
       ...data.slice(0, workspaceIndex),
       {
         ...workspace,
@@ -48,6 +54,15 @@ const updateListCheck = (
       },
       ...data.slice(workspaceIndex + 1),
     ];
+    if (auth.currentUser) {
+      const userRef = doc(db, "users", auth.currentUser.uid).withConverter(
+        userConverter
+      );
+      await updateDoc(userRef, {
+        workspaces: newData,
+      });
+    }
+    return newData;
   }
   return null;
 };

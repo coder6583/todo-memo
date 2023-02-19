@@ -8,7 +8,7 @@ import { RecoilRoot } from "recoil";
 const buttonTheme = createTheme({
   typography: {
     fontFamily: [
-      "Product Sans",
+      "Rubik",
       "Montserrat",
       "Roboto",
       '"Helvetica Neue"',

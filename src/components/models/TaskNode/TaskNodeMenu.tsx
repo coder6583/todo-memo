@@ -32,17 +32,18 @@ const TaskNodeMenu: FC<MenuComponentProps> = ({
       </MenuItem>
       <MenuItem
         onClick={() => {
-          const newWorkspaces = updateDuplicateTask(
+          updateDuplicateTask(
             data.workspaces,
             workspaceIndex,
             listIndex,
             taskIndex,
             taskState
-          );
-          if (newWorkspaces) {
-            setData({ ...data, workspaces: newWorkspaces });
-          }
-          handleClose();
+          ).then((newWorkspaces) => {
+            if (newWorkspaces) {
+              setData({ ...data, workspaces: newWorkspaces });
+            }
+            handleClose();
+          });
         }}
       >
         <ListItemIcon>
@@ -53,17 +54,18 @@ const TaskNodeMenu: FC<MenuComponentProps> = ({
       <Divider />
       <MenuItem
         onClick={() => {
-          const newWorkspaces = updateRemoveTask(
+          updateRemoveTask(
             data.workspaces,
             workspaceIndex,
             listIndex,
             taskIndex,
             taskState
-          );
-          if (newWorkspaces) {
-            setData({ ...data, workspaces: newWorkspaces });
-          }
-          handleClose();
+          ).then((newWorkspaces) => {
+            if (newWorkspaces) {
+              setData({ ...data, workspaces: newWorkspaces });
+            }
+            handleClose();
+          });
         }}
         className="text-red-600"
       >

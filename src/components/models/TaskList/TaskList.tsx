@@ -4,7 +4,7 @@ import { UserState, WorkspaceIndexState } from "@/features/recoil/tasklist";
 import updateAddTask from "@/features/tasklist/updateAddTask";
 import updateListName from "@/features/tasklist/updateListName";
 import { TaskListType, TaskStateType } from "@/typings/tasklist";
-import { AddCircleOutline, MoreHoriz } from "@mui/icons-material";
+import { AddCircleOutline } from "@mui/icons-material";
 import {
   Box,
   Card,
@@ -14,7 +14,7 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
-import { FC, MouseEventHandler, useState } from "react";
+import { FC, MouseEventHandler } from "react";
 import { useRecoilState } from "recoil";
 import ChildTaskList from "./ChildTaskList";
 import TaskListMenu from "./TaskListMenu";
@@ -32,14 +32,13 @@ const TaskList: FC<TaskListProps> = ({
   const [data, setData] = useRecoilState(UserState);
   const [workspaceIndex] = useRecoilState(WorkspaceIndexState);
   const handleAddTask: MouseEventHandler<HTMLButtonElement> = () => {
-    const newWorkspaces = updateAddTask(
-      data.workspaces,
-      workspaceIndex,
-      listIndex
+    updateAddTask(data.workspaces, workspaceIndex, listIndex).then(
+      (newWorkspaces) => {
+        if (newWorkspaces) {
+          setData({ ...data, workspaces: newWorkspaces });
+        }
+      }
     );
-    if (newWorkspaces) {
-      setData({ ...data, workspaces: newWorkspaces });
-    }
   };
 
   return (
@@ -49,15 +48,16 @@ const TaskList: FC<TaskListProps> = ({
           <EditableTypography
             defaultValue={tasklist.name}
             onBlur={(e) => {
-              const newWorkspaces = updateListName(
+              updateListName(
                 data.workspaces,
                 workspaceIndex,
                 listIndex,
                 e.currentTarget.value
-              );
-              if (newWorkspaces) {
-                setData({ ...data, workspaces: newWorkspaces });
-              }
+              ).then((newWorkspaces) => {
+                if (newWorkspaces) {
+                  setData({ ...data, workspaces: newWorkspaces });
+                }
+              });
             }}
           />
         }

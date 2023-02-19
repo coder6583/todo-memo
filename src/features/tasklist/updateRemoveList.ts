@@ -1,10 +1,16 @@
-import { TaskListViewType } from "@/typings/tasklist";
+import { TaskListViewType, WorkspaceIndexType } from "@/typings/tasklist";
+import { doc, updateDoc } from "firebase/firestore";
+import db, { auth } from "../firebase/firebase";
+import { userConverter } from "../firebase/firestore";
 
-const updateRemoveList = (
+const updateRemoveList = async (
   data: TaskListViewType[],
-  workspaceIndex: number,
+  workspaceIndex: WorkspaceIndexType,
   listIndex: number
-): TaskListViewType[] | null => {
+): Promise<TaskListViewType[] | null> => {
+  if (typeof workspaceIndex !== "number") {
+    return null;
+  }
   const workspace = data.at(workspaceIndex);
   if (!workspace) {
     return null;
@@ -12,7 +18,7 @@ const updateRemoveList = (
   if (!workspace.tasklistlist) {
     return null;
   }
-  return [
+  const newData = [
     ...data.slice(0, workspaceIndex),
     {
       ...workspace,
@@ -23,6 +29,15 @@ const updateRemoveList = (
     },
     ...data.slice(workspaceIndex + 1),
   ];
+  if (auth.currentUser) {
+    const userRef = doc(db, "users", auth.currentUser.uid).withConverter(
+      userConverter
+    );
+    await updateDoc(userRef, {
+      workspaces: newData,
+    });
+  }
+  return newData;
 };
 
 export default updateRemoveList;

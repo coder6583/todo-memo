@@ -1,17 +1,23 @@
 import {
   TaskListType,
   TaskListViewType,
-  TaskStateType,
   TaskType,
+  WorkspaceIndexType,
 } from "@/typings/tasklist";
+import { doc, updateDoc } from "firebase/firestore";
 import { DropResult } from "react-beautiful-dnd";
+import db, { auth } from "../firebase/firebase";
+import { userConverter } from "../firebase/firestore";
 import { checkStateType, insertTask } from "./utils";
 
-const updateListDrag = (
+const updateListDrag = async (
   data: TaskListViewType[],
-  workspaceIndex: number,
+  workspaceIndex: WorkspaceIndexType,
   result: DropResult
-): TaskListViewType[] | null => {
+): Promise<TaskListViewType[] | null> => {
+  if (typeof workspaceIndex !== "number") {
+    return null;
+  }
   const workspace = data.at(workspaceIndex);
   if (!workspace) {
     return null;
@@ -62,6 +68,7 @@ const updateListDrag = (
     ...task,
     state: destState,
   };
+  let newData: TaskListViewType[] | null;
   if (sourceIndex != destIndex) {
     const newSourceTaskList = {
       ...workspace.tasklistlist.at(sourceIndex),
@@ -77,7 +84,7 @@ const updateListDrag = (
         [destState]: insertTask(destList, newtask, result.destination?.index),
       },
     } as TaskListType;
-    return [
+    newData = [
       ...data.slice(0, workspaceIndex),
       {
         ...workspace,
@@ -102,7 +109,7 @@ const updateListDrag = (
         ),
       },
     } as TaskListType;
-    return [
+    newData = [
       ...data.slice(0, workspaceIndex),
       {
         ...workspace,
@@ -121,7 +128,7 @@ const updateListDrag = (
         [destState]: insertTask(destList, newtask, result.destination?.index),
       },
     } as TaskListType;
-    return [
+    newData = [
       ...data.slice(0, workspaceIndex),
       {
         ...workspace,
@@ -132,8 +139,17 @@ const updateListDrag = (
       ...data.slice(workspaceIndex + 1),
     ];
   } else {
-    return null;
+    newData = null;
   }
+  if (auth.currentUser && newData) {
+    const userRef = doc(db, "users", auth.currentUser.uid).withConverter(
+      userConverter
+    );
+    await updateDoc(userRef, {
+      workspaces: newData,
+    });
+  }
+  return newData;
 };
 
 export { updateListDrag };

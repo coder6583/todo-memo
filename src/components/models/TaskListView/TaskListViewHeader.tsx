@@ -17,16 +17,21 @@ const TaskListViewHeader = () => {
   return (
     <Box component="div" className="flex pb-4 pt-4 pl-8">
       <EditableTypography
-        defaultValue={data.workspaces.at(workspaceIndex)?.name ?? ""}
+        defaultValue={
+          typeof workspaceIndex === "number"
+            ? data.workspaces.at(workspaceIndex)?.name ?? ""
+            : ""
+        }
         onBlur={(e) => {
-          const newWorkspaces = updateViewName(
+          updateViewName(
             data.workspaces,
             workspaceIndex,
             e.currentTarget.value
-          );
-          if (newWorkspaces) {
-            setData({ ...data, workspaces: newWorkspaces });
-          }
+          ).then((newWorkspaces) => {
+            if (newWorkspaces) {
+              setData({ ...data, workspaces: newWorkspaces });
+            }
+          });
         }}
         underlineColor="black"
         textColor="black"

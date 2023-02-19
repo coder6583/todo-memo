@@ -1,4 +1,4 @@
-import { UserState } from "@/features/recoil/tasklist";
+import { UserState, WorkspaceIndexState } from "@/features/recoil/tasklist";
 import { Home } from "@mui/icons-material";
 import {
   Divider,
@@ -9,12 +9,18 @@ import {
   ListItemText,
   Paper,
 } from "@mui/material";
+import { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import AddWorkspaceButton from "./AddWorkspaceButton";
 import WorkspaceListItem from "./WorkspaceListItem";
 
 const WorkspaceSider = () => {
   const [data, setData] = useRecoilState(UserState);
+  const [workspaceIndex, setWorkspaceIndex] =
+    useRecoilState(WorkspaceIndexState);
+  useEffect(() => {
+    setWorkspaceIndex(workspaceIndex);
+  }, [workspaceIndex, setWorkspaceIndex]);
 
   return (
     <>
@@ -26,8 +32,17 @@ const WorkspaceSider = () => {
         elevation={2}
       >
         <List className="pt-2">
-          <ListItem className="p-0">
-            <ListItemButton>
+          <ListItem
+            className="p-0"
+            sx={{
+              backgroundColor: workspaceIndex === "home" ? "#DDDDDD" : "FFFFFF",
+            }}
+          >
+            <ListItemButton
+              onClick={() => {
+                setWorkspaceIndex("home");
+              }}
+            >
               <ListItemIcon>
                 <Home />
               </ListItemIcon>

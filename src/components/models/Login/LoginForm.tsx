@@ -1,6 +1,10 @@
 import { ChangeEventHandler, FormEventHandler, useState } from "react";
-import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
-import { auth, provider } from "@/features/firebase/firebase";
+import {
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  UserCredential,
+} from "firebase/auth";
+import db, { auth, provider } from "@/features/firebase/firebase";
 import {
   Button,
   Divider,
@@ -12,9 +16,15 @@ import {
 import PasswordInput from "@/components/ui/PasswordInput";
 import { useRouter } from "next/router";
 import GoogleButton from "react-google-button";
+import { useRecoilState } from "recoil";
+import { UserState, WorkspaceIndexState } from "@/features/recoil/tasklist";
+import { doc, getDoc } from "firebase/firestore";
 
 const LoginForm = () => {
   const router = useRouter();
+  const [workspaceIndex, setWorkspaceIndex] =
+    useRecoilState(WorkspaceIndexState);
+  const [userData, setUserData] = useRecoilState(UserState);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -30,6 +40,11 @@ const LoginForm = () => {
     });
   };
 
+  const handleLogin = () => {
+    setWorkspaceIndex("home");
+    router.push("/todo");
+  };
+
   const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     try {
@@ -39,18 +54,20 @@ const LoginForm = () => {
         password
       );
       if (userCredential.user) {
-        router.push("/todo");
+        handleLogin();
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
   const signIn = () => {
     signInWithPopup(auth, provider)
       .catch((err) => alert(err.message))
-      .then(() => {
-        router.push("/todo");
+      .then((user) => {
+        if (user) {
+          handleLogin();
+        }
       });
   };
 
@@ -91,5 +108,4 @@ const LoginForm = () => {
     </Paper>
   );
 };
-
 export default LoginForm;

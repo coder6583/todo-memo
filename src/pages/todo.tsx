@@ -7,11 +7,13 @@ import { doc, onSnapshot } from "firebase/firestore";
 import db, { auth } from "@/features/firebase/firebase";
 import { userConverter } from "@/features/firebase/firestore";
 import { useRecoilState } from "recoil";
-import { UserState } from "@/features/recoil/tasklist";
+import { UserState, WorkspaceIndexState } from "@/features/recoil/tasklist";
+import WorkspaceHomeView from "@/components/models/Workspace/WorkspaceHomeView";
 
 const Todo: NextPage = () => {
   const title = "Todomemo";
   const [user, setUser] = useRecoilState(UserState);
+  const [workspaceIndex] = useRecoilState(WorkspaceIndexState);
   useEffect(() => {
     if (auth.currentUser) {
       const userDocumentRef = doc(
@@ -21,7 +23,6 @@ const Todo: NextPage = () => {
       ).withConverter(userConverter);
       const unsub = onSnapshot(userDocumentRef, (documentSnapshot) => {
         const data = documentSnapshot.data();
-        console.log(data);
         if (data) {
           setUser(data);
         }
@@ -36,7 +37,11 @@ const Todo: NextPage = () => {
         <title>{title}</title>
       </Head>
       <WorkspaceLayout>
-        <TaskListView />
+        {typeof workspaceIndex === "number" ? (
+          <TaskListView workspace={user.workspaces.at(workspaceIndex)} />
+        ) : (
+          <WorkspaceHomeView />
+        )}
       </WorkspaceLayout>
     </>
   );

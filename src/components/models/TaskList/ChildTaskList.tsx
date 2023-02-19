@@ -69,14 +69,15 @@ const ChildTaskList: FC<ChildTaskListType> = ({
                 startIcon={<AddCircleOutline />}
                 className="h-min mt-2 border-theme2 text-theme2 mr-4"
                 onClick={() => {
-                  const newWorkspaces = updateAddTask(
+                  updateAddTask(
                     data.workspaces,
                     workspaceIndex,
                     listIndex
-                  );
-                  if (newWorkspaces) {
-                    setData({ ...data, workspaces: newWorkspaces });
-                  }
+                  ).then((newWorkspaces) => {
+                    if (newWorkspaces) {
+                      setData({ ...data, workspaces: newWorkspaces });
+                    }
+                  });
                 }}
                 fullWidth
               >

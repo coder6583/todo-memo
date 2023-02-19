@@ -64,16 +64,17 @@ const TaskNode: FC<TaskNodeProps> = ({
       >
         <IconButton
           onClick={() => {
-            const newWorkspaces = updateListCheck(
+            updateListCheck(
               data.workspaces,
               workspaceIndex,
               listIndex,
               taskIndex,
               state
-            );
-            if (newWorkspaces) {
-              setData({ ...data, workspaces: newWorkspaces });
-            }
+            ).then((newWorkspaces) => {
+              if (newWorkspaces) {
+                setData({ ...data, workspaces: newWorkspaces });
+              }
+            });
           }}
         >
           {stateIcon(task.state)}
@@ -89,19 +90,21 @@ const TaskNode: FC<TaskNodeProps> = ({
               onDoubleClick={stopPropagation}
               onChange={(e) => {
                 setError(e.currentTarget.value == "");
-                const newWorkspaces = updateTask(
+                updateTask(
                   data.workspaces,
                   workspaceIndex,
                   listIndex,
                   taskIndex,
                   task.state,
                   { ...task, name: e.currentTarget.value }
-                );
-                if (newWorkspaces) {
-                  setData({ ...data, workspaces: newWorkspaces });
-                }
+                ).then((newWorkspaces) => {
+                  if (newWorkspaces) {
+                    setData({ ...data, workspaces: newWorkspaces });
+                  }
+                });
               }}
               multiline
+              fullWidth
               className="mb-1"
             />
           ) : (

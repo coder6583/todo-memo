@@ -1,11 +1,17 @@
-import { TaskListViewType } from "@/typings/tasklist";
+import { TaskListViewType, WorkspaceIndexType } from "@/typings/tasklist";
+import { doc, updateDoc } from "firebase/firestore";
 import { v4 } from "uuid";
+import db, { auth } from "../firebase/firebase";
+import { userConverter } from "../firebase/firestore";
 
-const updateDuplicateList = (
+const updateDuplicateList = async (
   data: TaskListViewType[],
-  workspaceIndex: number,
+  workspaceIndex: WorkspaceIndexType,
   listIndex: number
-): TaskListViewType[] | null => {
+): Promise<TaskListViewType[] | null> => {
+  if (typeof workspaceIndex !== "number") {
+    return null;
+  }
   const workspace = data.at(workspaceIndex);
   if (!workspace) {
     return null;
@@ -17,7 +23,7 @@ const updateDuplicateList = (
   if (!tasklist) {
     return null;
   }
-  return [
+  const newData = [
     ...data.slice(0, workspaceIndex),
     {
       ...workspace,
@@ -32,6 +38,15 @@ const updateDuplicateList = (
     },
     ...data.slice(workspaceIndex + 1),
   ];
+  if (auth.currentUser) {
+    const userRef = doc(db, "users", auth.currentUser.uid).withConverter(
+      userConverter
+    );
+    await updateDoc(userRef, {
+      workspaces: newData,
+    });
+  }
+  return newData;
 };
 
 export default updateDuplicateList;

@@ -12,14 +12,21 @@ import {
   createUserWithEmailAndPassword,
   signInWithPopup,
   updateProfile,
+  UserCredential,
 } from "firebase/auth";
 import { useRouter } from "next/router";
 import { ChangeEventHandler, FormEventHandler, useState } from "react";
 import GoogleButton from "react-google-button";
-import { addDoc, collection, doc, setDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
+import { UserState, WorkspaceIndexState } from "@/features/recoil/tasklist";
+import { useRecoilState } from "recoil";
+import { UserType } from "@/typings/tasklist";
 
 const SignUpForm = () => {
   const router = useRouter();
+  const [workspaceIndex, setWorkspaceIndex] =
+    useRecoilState(WorkspaceIndexState);
+  const [data, setData] = useRecoilState(UserState);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -36,6 +43,21 @@ const SignUpForm = () => {
     });
   };
 
+  const handleSignUp = async (userCredential: UserCredential) => {
+    const usersCollectionRef = doc(db, "users", userCredential.user.uid);
+    const newUser: UserType = {
+      name: name,
+      email: email,
+      uid: userCredential.user.uid,
+      avatar: "",
+      workspaces: [],
+    };
+    const documentRef = await setDoc(usersCollectionRef, newUser);
+    setWorkspaceIndex("home");
+    setData(newUser);
+    router.push("/todo");
+  };
+
   const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     try {
@@ -45,21 +67,13 @@ const SignUpForm = () => {
         password
       );
       if (auth.currentUser) {
-        router.push("/todo");
         updateProfile(auth.currentUser, {
           displayName: name,
         });
-        const usersCollectionRef = doc(db, "users", userCredential.user.uid);
-        const documentRef = await setDoc(usersCollectionRef, {
-          name: userCredential.user.displayName,
-          email: userCredential.user.email,
-          uid: userCredential.user.uid,
-          avatar: "",
-          workspaces: [],
-        });
+        await handleSignUp(userCredential);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -68,18 +82,8 @@ const SignUpForm = () => {
       .catch((err) => alert(err.message))
       .then((user) => {
         if (user) {
-          const userDocumentRef = doc(db, "users", user.user.uid);
-          const documentRef = setDoc(userDocumentRef, {
-            name: user.user.displayName,
-            email: user.user.email,
-            uid: user.user.uid,
-            avatar: user.user.photoURL,
-            workspaces: [],
-          });
+          handleSignUp(user);
         }
-      })
-      .then(() => {
-        router.push("/todo");
       });
   };
   return (

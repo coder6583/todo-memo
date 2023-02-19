@@ -1,13 +1,13 @@
 import { UserState, WorkspaceIndexState } from "@/features/recoil/tasklist";
 import { updateListDrag } from "@/features/tasklist/updateListDrag";
-import { AddCircleOutline } from "@mui/icons-material";
-import { Box, Button, Divider, Paper, styled } from "@mui/material";
+import { Box, Divider, Paper, styled } from "@mui/material";
 import { FC } from "react";
 import { DragDropContext } from "react-beautiful-dnd";
 import { useRecoilState } from "recoil";
 import AddListButton from "./AddListButton";
 import TaskList from "../TaskList/TaskList";
 import TaskListViewHeader from "./TaskListViewHeader";
+import { TaskListViewType } from "@/typings/tasklist";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -17,10 +17,13 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-const TaskListView: FC = () => {
+type TaskListViewProps = {
+  workspace: TaskListViewType | undefined;
+};
+
+const TaskListView: FC<TaskListViewProps> = ({ workspace }) => {
   const [data, setData] = useRecoilState(UserState);
   const [workspaceIndex] = useRecoilState(WorkspaceIndexState);
-  const workspace = data.workspaces.at(workspaceIndex);
 
   return (
     <>
@@ -28,14 +31,13 @@ const TaskListView: FC = () => {
       <Divider className="mb-2" />
       <DragDropContext
         onDragEnd={(result) => {
-          const newWorkspaces = updateListDrag(
-            data.workspaces,
-            workspaceIndex,
-            result
+          updateListDrag(data.workspaces, workspaceIndex, result).then(
+            (newWorkspaces) => {
+              if (newWorkspaces) {
+                setData({ ...data, workspaces: newWorkspaces });
+              }
+            }
           );
-          if (newWorkspaces) {
-            setData({ ...data, workspaces: newWorkspaces });
-          }
         }}
       >
         <Box

@@ -1,4 +1,8 @@
-import { TaskListViewType, UserType } from "@/typings/tasklist";
+import {
+  TaskListViewType,
+  UserType,
+  WorkspaceIndexType,
+} from "@/typings/tasklist";
 import { atom, RecoilState } from "recoil";
 
 const UserState: RecoilState<UserType> = atom({
@@ -12,9 +16,9 @@ const UserState: RecoilState<UserType> = atom({
   },
 });
 
-const WorkspaceIndexState: RecoilState<number> = atom({
+const WorkspaceIndexState: RecoilState<WorkspaceIndexType> = atom({
   key: "WorkspaceIndex",
-  default: 0,
+  default: "home" as WorkspaceIndexType,
 });
 
 const AddListButtonState: RecoilState<boolean> = atom({

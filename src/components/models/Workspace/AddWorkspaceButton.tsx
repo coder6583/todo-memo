@@ -1,5 +1,5 @@
 import NewItemInput from "@/components/ui/NewItemInput";
-import { UserState } from "@/features/recoil/tasklist";
+import { UserState, WorkspaceIndexState } from "@/features/recoil/tasklist";
 import { updateAddWorkspace } from "@/features/tasklist/updateAddWorkspace";
 import { AddCircle } from "@mui/icons-material";
 import {
@@ -14,13 +14,23 @@ import { useRecoilState } from "recoil";
 
 const AddWorkspaceButton = () => {
   const [data, setData] = useRecoilState(UserState);
+  const [workspaceIndex, setWorkspaceIndex] =
+    useRecoilState(WorkspaceIndexState);
   const [edit, setEdit] = useState<boolean>(false);
   const addList = (str: string) => {
-    const newWorkspaces = updateAddWorkspace(data.workspaces, str);
-    if (newWorkspaces) {
-      setData({ ...data, workspaces: newWorkspaces });
-    }
-    setEdit(false);
+    updateAddWorkspace(data.workspaces, str)
+      .then((newWorkspaces) => {
+        if (newWorkspaces) {
+          setData({ ...data, workspaces: newWorkspaces });
+          setWorkspaceIndex(newWorkspaces.length - 1);
+        } else {
+          // TODO: error
+        }
+        setEdit(false);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   };
   const handleOnAdd: (str: string) => MouseEventHandler<HTMLButtonElement> =
     (str: string) => () => {

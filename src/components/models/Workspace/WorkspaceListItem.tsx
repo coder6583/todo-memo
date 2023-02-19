@@ -26,7 +26,7 @@ const WorkspaceListItem: FC<WorkspaceListItemProps> = ({ workspace, i }) => {
     <ListItem
       className="p-0"
       key={workspace.name}
-      sx={{ backgroundColor: workspaceIndex == i ? "#DDDDDD" : "FFFFFF" }}
+      sx={{ backgroundColor: workspaceIndex === i ? "#DDDDDD" : "FFFFFF" }}
     >
       <ListItemButton
         onClick={() => {
@@ -41,7 +41,10 @@ const WorkspaceListItem: FC<WorkspaceListItemProps> = ({ workspace, i }) => {
       {/*Hover and show button*/}
       <ListItemSecondaryAction>
         <Box component="div">
-          <HorizMenu MenuComponent={WorkspaceMenu} menuComponentProps={{}} />
+          <HorizMenu
+            MenuComponent={WorkspaceMenu}
+            menuComponentProps={{ workspaceIndex: i }}
+          />
         </Box>
       </ListItemSecondaryAction>
     </ListItem>

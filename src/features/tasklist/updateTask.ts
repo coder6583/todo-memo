@@ -3,16 +3,23 @@ import {
   TaskListViewType,
   TaskStateType,
   TaskType,
+  WorkspaceIndexType,
 } from "@/typings/tasklist";
+import { doc, updateDoc } from "firebase/firestore";
+import db, { auth } from "../firebase/firebase";
+import { userConverter } from "../firebase/firestore";
 
-const updateTask = (
+const updateTask = async (
   data: TaskListViewType[],
-  workspaceIndex: number,
+  workspaceIndex: WorkspaceIndexType,
   listIndex: number,
   taskIndex: number,
   state: TaskStateType,
   newTask: TaskType
-): TaskListViewType[] | null => {
+): Promise<TaskListViewType[] | null> => {
+  if (typeof workspaceIndex !== "number") {
+    return null;
+  }
   const workspace = data.at(workspaceIndex);
   if (!workspace) {
     return null;
@@ -36,7 +43,7 @@ const updateTask = (
         }),
       },
     } as TaskListType;
-    return [
+    const newData = [
       ...data.slice(0, workspaceIndex),
       {
         ...workspace,
@@ -50,6 +57,15 @@ const updateTask = (
       },
       ...data.slice(workspaceIndex + 1),
     ];
+    if (auth.currentUser) {
+      const userRef = doc(db, "users", auth.currentUser.uid).withConverter(
+        userConverter
+      );
+      await updateDoc(userRef, {
+        workspaces: newData,
+      });
+    }
+    return newData;
   }
   return null;
 };

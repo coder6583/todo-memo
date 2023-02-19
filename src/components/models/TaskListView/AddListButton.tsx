@@ -15,11 +15,16 @@ const AddListButton = () => {
   const [edit, setEdit] = useRecoilState(AddListButtonState);
   const [workspaceIndex] = useRecoilState(WorkspaceIndexState);
   const addList = (str: string) => {
-    const newWorkspaces = updateAddList(data.workspaces, workspaceIndex, str);
-    if (newWorkspaces) {
-      setData({ ...data, workspaces: newWorkspaces });
-    }
-    setEdit(false);
+    updateAddList(data.workspaces, workspaceIndex, str)
+      .then((newWorkspaces) => {
+        if (newWorkspaces) {
+          setData({ ...data, workspaces: newWorkspaces });
+        }
+        setEdit(false);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   };
   const handleOnAdd: (str: string) => MouseEventHandler<HTMLButtonElement> =
     (str: string) => () => {

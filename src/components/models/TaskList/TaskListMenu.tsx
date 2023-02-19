@@ -30,15 +30,14 @@ const TaskListMenu: FC<MenuComponentProps> = ({ handleClose, listIndex }) => {
       </MenuItem>
       <MenuItem
         onClick={() => {
-          const newWorkspaces = updateDuplicateList(
-            data.workspaces,
-            workspaceIndex,
-            listIndex
+          updateDuplicateList(data.workspaces, workspaceIndex, listIndex).then(
+            (newWorkspaces) => {
+              if (newWorkspaces) {
+                setData({ ...data, workspaces: newWorkspaces });
+              }
+              handleClose();
+            }
           );
-          if (newWorkspaces) {
-            setData({ ...data, workspaces: newWorkspaces });
-          }
-          handleClose();
         }}
       >
         <ListItemIcon>
@@ -49,15 +48,16 @@ const TaskListMenu: FC<MenuComponentProps> = ({ handleClose, listIndex }) => {
       <Divider />
       <MenuItem
         onClick={() => {
-          const newWorkspaces = updateAddTask(
-            data.workspaces,
-            workspaceIndex,
-            listIndex
-          );
-          if (newWorkspaces) {
-            setData({ ...data, workspaces: newWorkspaces });
-          }
-          handleClose();
+          updateAddTask(data.workspaces, workspaceIndex, listIndex)
+            .then((newWorkspaces) => {
+              if (newWorkspaces) {
+                setData({ ...data, workspaces: newWorkspaces });
+              }
+              handleClose();
+            })
+            .catch((err) => {
+              console.error(err);
+            });
         }}
       >
         <ListItemIcon>
@@ -68,15 +68,14 @@ const TaskListMenu: FC<MenuComponentProps> = ({ handleClose, listIndex }) => {
       <Divider />
       <MenuItem
         onClick={() => {
-          const newWorkspaces = updateRemoveList(
-            data.workspaces,
-            workspaceIndex,
-            listIndex
+          updateRemoveList(data.workspaces, workspaceIndex, listIndex).then(
+            (newWorkspaces) => {
+              if (newWorkspaces) {
+                setData({ ...data, workspaces: newWorkspaces });
+              }
+              handleClose();
+            }
           );
-          if (newWorkspaces) {
-            setData({ ...data, workspaces: newWorkspaces });
-          }
-          handleClose();
         }}
         className="text-red-600"
       >

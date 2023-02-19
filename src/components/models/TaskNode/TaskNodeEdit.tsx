@@ -31,17 +31,18 @@ const TaskNodeEdit: FC<TaskNodeEditProps> = ({
         size="small"
         onClick={() => {
           if (!originalTask) {
-            const newWorkspaces = updateTask(
+            updateTask(
               data.workspaces,
               workspaceIndex,
               listIndex,
               taskIndex,
               "todo",
               { ...task, initialized: true }
-            );
-            if (newWorkspaces) {
-              setData({ ...data, workspaces: newWorkspaces });
-            }
+            ).then((newWorkspaces) => {
+              if (newWorkspaces) {
+                setData({ ...data, workspaces: newWorkspaces });
+              }
+            });
           }
           close();
         }}
@@ -53,30 +54,36 @@ const TaskNodeEdit: FC<TaskNodeEditProps> = ({
         variant="outlined"
         onClick={() => {
           if (!originalTask) {
-            const newWorkspaces = updateRemoveTask(
+            updateRemoveTask(
               data.workspaces,
               workspaceIndex,
               listIndex,
               taskIndex,
               "todo"
-            );
-            if (newWorkspaces) {
-              setData({ ...data, workspaces: newWorkspaces });
-            }
-            return null;
+            )
+              .then((newWorkspaces) => {
+                if (newWorkspaces) {
+                  setData({ ...data, workspaces: newWorkspaces });
+                }
+              })
+              .catch((err) => {
+                console.error(err);
+              });
+          } else {
+            updateTask(
+              data.workspaces,
+              workspaceIndex,
+              listIndex,
+              taskIndex,
+              originalTask.state,
+              originalTask
+            ).then((newWorkspaces) => {
+              if (newWorkspaces) {
+                setData({ ...data, workspaces: newWorkspaces });
+              }
+              close();
+            });
           }
-          const newWorkspaces = updateTask(
-            data.workspaces,
-            workspaceIndex,
-            listIndex,
-            taskIndex,
-            originalTask.state,
-            originalTask
-          );
-          if (newWorkspaces) {
-            setData({ ...data, workspaces: newWorkspaces });
-          }
-          close();
         }}
         className="w-auto mr-1"
         size="small"

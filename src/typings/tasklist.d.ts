@@ -36,6 +36,7 @@ export type TaskListViewType = {
 
 export type MenuComponentProps = {
   handleClose: () => void;
+  workspaceIndex?: number;
   listIndex?: number;
   taskIndex?: number;
   taskState?: TaskStateType;
@@ -48,3 +49,5 @@ export type UserType = {
   uid: string;
   workspaces: TaskListViewType[];
 };
+
+export type WorkspaceIndexType = number | "home";
