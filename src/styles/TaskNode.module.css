@@ -1,0 +1,4 @@
+.TaskNodeMemoEditInput:focus {
+  border-left: 20px !important;
+  border-color: var(--theme1) !important;
+}

@@ -37,6 +37,7 @@ const updateAddTask = async (
     name: "",
     state: "todo",
     initialized: false,
+    memolist: [],
   };
   const newTaskList: TaskListType = {
     ...tasklist,

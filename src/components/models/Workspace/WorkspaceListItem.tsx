@@ -13,6 +13,7 @@ import {
 import { FC, useState } from "react";
 import { useRecoilState } from "recoil";
 import WorkspaceMenu from "./WorkspaceMenu";
+import styles from "./Workspace.module.css";
 
 type WorkspaceListItemProps = {
   workspace: TaskListViewType;
@@ -20,6 +21,7 @@ type WorkspaceListItemProps = {
 };
 
 const WorkspaceListItem: FC<WorkspaceListItemProps> = ({ workspace, i }) => {
+  const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const [workspaceIndex, setIndex] = useRecoilState(WorkspaceIndexState);
 
   return (
@@ -28,25 +30,30 @@ const WorkspaceListItem: FC<WorkspaceListItemProps> = ({ workspace, i }) => {
       key={workspace.name}
       sx={{ backgroundColor: workspaceIndex === i ? "#DDDDDD" : "FFFFFF" }}
     >
-      <ListItemButton
-        onClick={() => {
-          setIndex(i);
-        }}
-      >
-        <ListItemIcon>
-          <Wysiwyg />
-        </ListItemIcon>
-        <ListItemText primary={workspace.name} />
-      </ListItemButton>
-      {/*Hover and show button*/}
-      <ListItemSecondaryAction>
-        <Box component="div">
-          <HorizMenu
-            MenuComponent={WorkspaceMenu}
-            menuComponentProps={{ workspaceIndex: i }}
-          />
-        </Box>
-      </ListItemSecondaryAction>
+      <div className={styles.listItem}>
+        <ListItemButton
+          onClick={() => {
+            setIndex(i);
+          }}
+        >
+          <ListItemIcon>
+            <Wysiwyg />
+          </ListItemIcon>
+          <ListItemText primary={workspace.name} />
+        </ListItemButton>
+        <ListItemSecondaryAction>
+          <div
+            className={styles.horizMenu}
+            style={{ display: menuOpen ? "block" : "" }}
+          >
+            <HorizMenu
+              MenuComponent={WorkspaceMenu}
+              menuComponentProps={{ workspaceIndex: i }}
+              setMenuOpen={setMenuOpen}
+            />
+          </div>
+        </ListItemSecondaryAction>
+      </div>
     </ListItem>
   );
 };

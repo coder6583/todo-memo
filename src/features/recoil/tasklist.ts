@@ -26,4 +26,14 @@ const AddListButtonState: RecoilState<boolean> = atom({
   default: false,
 });
 
-export { UserState, WorkspaceIndexState, AddListButtonState };
+const WorkspaceExpandState: RecoilState<boolean> = atom({
+  key: "WorkspaceExpand",
+  default: false,
+});
+
+export {
+  UserState,
+  WorkspaceIndexState,
+  AddListButtonState,
+  WorkspaceExpandState,
+};

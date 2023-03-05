@@ -84,7 +84,7 @@ const TaskList: FC<TaskListProps> = ({
         sx={{ backgroundColor: tasklist.tagColor }}
         className="pl-4 pt-2 pb-1 pr-1 font-extrabold text-xl text-white shadow-sm align-middle"
       />
-      <CardContent>
+      <CardContent className="pl-0">
         {[
           { id: "todo" as TaskStateType, name: "To do" },
           { id: "ondeck" as TaskStateType, name: "On Deck" },
@@ -92,10 +92,13 @@ const TaskList: FC<TaskListProps> = ({
         ].map((element, idIndex) => {
           return (
             <Box component="div" key={element.id}>
-              <Typography variant="h6" className={idIndex ? "pt-2" : ""}>
+              <Typography
+                variant="h6"
+                className={idIndex ? "pt-2 pl-4" : "pl-4"}
+              >
                 {element.name}
               </Typography>
-              <Divider />
+              <Divider className="ml-4" />
               <ChildTaskList
                 id={tasklist.id + element.id}
                 listIndex={listIndex}

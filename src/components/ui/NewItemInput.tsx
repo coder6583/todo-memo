@@ -17,7 +17,7 @@ const NewItemInput: FC<NewItemInputProps> = ({
   inputError,
 }) => {
   const [newName, setName] = useState<string>("");
-  const [error, setError] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(true);
   return (
     <Paper
       className="mx-auto ml-2 mr-2 border-theme2 p-2 pt-1"

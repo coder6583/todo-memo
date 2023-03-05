@@ -1,0 +1,59 @@
+.expandedView {
+  display: flex;
+  width: 100%;
+  /* justify-content: center; */
+}
+
+.viewLeftSlideButton {
+  position: fixed;
+  left: calc(20% + 1.5%);
+  top: calc(var(--top-bar-height) + var(--listview-header) + 36px);
+  padding-top: calc(
+    (100vh - var(--top-bar-height) - var(--listview-header) - 17px) * 0.35
+  );
+  padding-bottom: calc(
+    (100vh - var(--top-bar-height) - var(--listview-header) - 17px) * 0.4
+  );
+  padding-left: 4px;
+  padding-right: 4px;
+  background-color: rgba(0 0 0 / 0%);
+  border-radius: 4px;
+  transition: background-color 0.4s;
+  scroll-events: none;
+}
+
+.viewLeftSlideButton:hover {
+  background-color: rgba(0 0 0 / 10%);
+  cursor: pointer;
+}
+
+.viewLeftSlideButton:active {
+  background-color: rgba(0 0 0 / 20%);
+}
+
+.viewRightSlideButton {
+  position: fixed;
+  right: 1.5%;
+  top: calc(var(--top-bar-height) + var(--listview-header) + 36px);
+  padding-top: calc(
+    (100vh - var(--top-bar-height) - var(--listview-header) - 17px) * 0.35
+  );
+  padding-bottom: calc(
+    (100vh - var(--top-bar-height) - var(--listview-header) - 17px) * 0.4
+  );
+  padding-left: 4px;
+  padding-right: 4px;
+  background-color: rgba(0 0 0 / 0%);
+  border-radius: 4px;
+  transition: background-color 0.4s;
+  scroll-events: none;
+}
+
+.viewRightSlideButton:hover {
+  background-color: rgba(0 0 0 / 10%);
+  cursor: pointer;
+}
+
+.viewRightSlideButton:active {
+  background-color: rgba(0 0 0 / 20%);
+}

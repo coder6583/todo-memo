@@ -44,6 +44,7 @@ const ChildTaskList: FC<ChildTaskListType> = ({
                         ref={draggableProvided.innerRef}
                         {...draggableProvided.draggableProps}
                         {...draggableProvided.dragHandleProps}
+                        className="float-right"
                       >
                         <TaskNode
                           task={task}
@@ -67,7 +68,8 @@ const ChildTaskList: FC<ChildTaskListType> = ({
               <Button
                 variant="outlined"
                 startIcon={<AddCircleOutline />}
-                className="h-min mt-2 border-theme2 text-theme2 mr-4"
+                className="h-min ml-4 mt-2 border-theme2 text-theme2"
+                sx={{ width: "calc(100% - 16px)" }}
                 onClick={() => {
                   updateAddTask(
                     data.workspaces,
@@ -79,7 +81,6 @@ const ChildTaskList: FC<ChildTaskListType> = ({
                     }
                   });
                 }}
-                fullWidth
               >
                 Add New Task
               </Button>

@@ -1,13 +1,18 @@
-import { UserState, WorkspaceIndexState } from "@/features/recoil/tasklist";
+import {
+  UserState,
+  WorkspaceExpandState,
+  WorkspaceIndexState,
+} from "@/features/recoil/tasklist";
 import { updateListDrag } from "@/features/tasklist/updateListDrag";
-import { Box, Divider, Paper, styled } from "@mui/material";
-import { FC } from "react";
+import { Box, Divider, Paper, styled, SxProps, Theme } from "@mui/material";
+import { FC, useEffect, useState } from "react";
 import { DragDropContext } from "react-beautiful-dnd";
 import { useRecoilState } from "recoil";
 import AddListButton from "./AddListButton";
 import TaskList from "../TaskList/TaskList";
 import TaskListViewHeader from "./TaskListViewHeader";
 import { TaskListViewType } from "@/typings/tasklist";
+import TaskListViewContents from "./TaskListViewContents";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -24,11 +29,25 @@ type TaskListViewProps = {
 const TaskListView: FC<TaskListViewProps> = ({ workspace }) => {
   const [data, setData] = useRecoilState(UserState);
   const [workspaceIndex] = useRecoilState(WorkspaceIndexState);
+  const [workspaceExpand] = useRecoilState(WorkspaceExpandState);
+  const [taskListIndex, setTaskListIndex] = useState<number | null>(
+    workspaceExpand ? 0 : null
+  );
+
+  useEffect(() => {
+    if (workspaceExpand) {
+      if (taskListIndex == null) {
+        setTaskListIndex(0);
+      }
+    } else {
+      setTaskListIndex(null);
+    }
+  }, [workspaceExpand, taskListIndex]);
 
   return (
     <>
-      <TaskListViewHeader />
-      <Divider className="mb-2" />
+      <TaskListViewHeader setTaskListIndex={setTaskListIndex} />
+      <Divider className="mb-0" />
       <DragDropContext
         onDragEnd={(result) => {
           updateListDrag(data.workspaces, workspaceIndex, result).then(
@@ -41,14 +60,14 @@ const TaskListView: FC<TaskListViewProps> = ({ workspace }) => {
         }}
       >
         <Box
+          id="tasklistview"
           component="div"
-          className="flex overflow-auto w-full pl-4"
+          className="flex overflow-auto w-full pt-2"
           sx={{
             height:
-              "calc(100vh - var(--top-bar-height) - var(--listview-header) - 17px)",
-            // scrollbarWidth: "thin",
+              "calc(100vh - var(--top-bar-height) - var(--listview-header) - 9px)",
             "&::-webkit-scrollbar": {
-              height: "8px",
+              height: workspaceExpand ? "0px" : "12px",
               width: "8px",
             },
             "&::-webkit-scrollbar-track": {
@@ -57,25 +76,22 @@ const TaskListView: FC<TaskListViewProps> = ({ workspace }) => {
             "&::-webkit-scrollbar-thumb": {
               backgroundColor: "#888",
               borderRadius: "10px",
+              border: "5px",
             },
             "&::-webkit-scrollbar-thumb:hover": {
-              background: "#555",
+              background: "#666",
+            },
+            "&::-webkit-scrollbar-thumb:active": {
+              background: "#444",
             },
           }}
         >
-          {(workspace?.tasklistlist ?? []).map((tasklist, listIndex) => {
-            return (
-              <Paper
-                elevation={4}
-                className="block m-2 mr-4 h-min"
-                sx={{ width: "37%", minWidth: "37%", maxWidth: "37%" }}
-                key={tasklist.id}
-              >
-                <TaskList tasklist={tasklist} listIndex={listIndex} />
-              </Paper>
-            );
-          })}
-          <AddListButton />
+          <TaskListViewContents
+            workspace={workspace}
+            workspaceExpand={workspaceExpand}
+            taskListIndex={taskListIndex}
+            setTaskListIndex={setTaskListIndex}
+          />
         </Box>
       </DragDropContext>
     </>

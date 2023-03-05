@@ -1,0 +1,12 @@
+.listItem {
+  padding: 0;
+  width: 100%;
+}
+
+.horizMenu {
+  display: none;
+}
+
+.listItem:hover .horizMenu {
+  display: block;
+}

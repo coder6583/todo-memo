@@ -11,6 +11,8 @@
 :root {
   --top-bar-height: 48px;
   --listview-header: 78px;
+  --theme1: #225577;
+  --theme2: #1b998b;
 }
 
 .MuiCardHeader-action {
@@ -27,4 +29,44 @@
     .Mui-error
   ):before {
   border-bottom: 2px solid rgba(255, 255, 255, 1);
+}
+
+.cm-focused {
+  outline: 0 !important;
+  border-left: 2px solid !important;
+  border-color: var(--theme2) !important;
+}
+
+.cm-editor {
+  background-color: #f3f4f6;
+}
+
+.cm-scroller {
+  font-family: Consolas !important;
+  overflow-x: auto;
+}
+
+.cm-content {
+  margin-bottom: 8px !important;
+  cursor: text;
+}
+
+.cm-scroller::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+  cursor: crosshair;
+}
+.cm-scroller::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+.cm-scroller::-webkit-scrollbar-thumb {
+  background: #aaaaaa;
+  border-radius: 10px;
+}
+.cm-scroller::-webkit-scrollbar-thumb:hover {
+  background: #888888;
+}
+.cm-scroller::-webkit-scrollbar-thumb:active {
+  background: #666666;
+  cursor: grab !important;
 }
