@@ -1,9 +1,7 @@
 import UserAvatar from "@/components/ui/UserAvatar";
-import db, { auth } from "@/features/firebase/firebase";
-import { AccountCircle } from "@mui/icons-material";
+import { auth } from "@/features/firebase/firebase";
 import {
   AppBar,
-  Avatar,
   Box,
   IconButton,
   Menu,
@@ -11,7 +9,6 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import { doc, getDoc } from "firebase/firestore";
 import { useRouter } from "next/router";
 import { FC, useEffect, useState } from "react";
 

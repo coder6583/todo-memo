@@ -10,3 +10,28 @@
 .listItem:hover .horizMenu {
   display: block;
 }
+
+.siderStyle {
+  overflow: autp;
+  width: 20%;
+  background-color: #f3f4f6;
+  height: calc(100vh - var(--top-bar-height));
+}
+
+.siderStyle::-webkit-scrollbar {
+  height: 8px;
+  width: 4px;
+}
+
+.siderStyle::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.siderStyle::-webkit-scrollbar-thumb {
+  backgroundcolor: #888;
+  borderradius: 10px;
+}
+
+.siderStyle::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
